@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BF7B64C02110460F0078F78B /* SpeechHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B64BF2110460F0078F78B /* SpeechHelper.swift */; };
+		BFC6EB86211B1F2300F64100 /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6EB85211B1F2300F64100 /* GeneratorViewController.swift */; };
 		BFDD46F6211080E200381F88 /* BarcodeDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDD46F5211080E200381F88 /* BarcodeDetailsViewController.swift */; };
 		BFDD46F82110A09A00381F88 /* BarcodeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDD46F72110A09A00381F88 /* BarcodeHelper.swift */; };
 		BFF60AFB210F198C0021C58B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF60AFA210F198C0021C58B /* AppDelegate.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		BF7B64BF2110460F0078F78B /* SpeechHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechHelper.swift; sourceTree = "<group>"; };
+		BFC6EB85211B1F2300F64100 /* GeneratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
 		BFDD46F5211080E200381F88 /* BarcodeDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeDetailsViewController.swift; sourceTree = "<group>"; };
 		BFDD46F72110A09A00381F88 /* BarcodeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeHelper.swift; sourceTree = "<group>"; };
 		BFF60AF7210F198C0021C58B /* QRCodesReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QRCodesReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +74,7 @@
 				BF7B64BF2110460F0078F78B /* SpeechHelper.swift */,
 				BFDD46F5211080E200381F88 /* BarcodeDetailsViewController.swift */,
 				BFDD46F72110A09A00381F88 /* BarcodeHelper.swift */,
+				BFC6EB85211B1F2300F64100 /* GeneratorViewController.swift */,
 			);
 			path = QRCodesReader;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 				BFF60AFD210F198C0021C58B /* ViewController.swift in Sources */,
 				BF7B64C02110460F0078F78B /* SpeechHelper.swift in Sources */,
 				BFDD46F82110A09A00381F88 /* BarcodeHelper.swift in Sources */,
+				BFC6EB86211B1F2300F64100 /* GeneratorViewController.swift in Sources */,
 				BFF60AFB210F198C0021C58B /* AppDelegate.swift in Sources */,
 				BFDD46F6211080E200381F88 /* BarcodeDetailsViewController.swift in Sources */,
 				BFF60B0D210F48770021C58B /* CameraHelper.swift in Sources */,

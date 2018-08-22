@@ -9,16 +9,20 @@
 import UIKit
 import AVFoundation
 
-class QRCodeHelper{
+class BarcodeHelper{
     enum SupportedFormat: String {
         case code128 = "CICode128BarcodeGenerator"
         case pdf417 = "CIPDF417BarcodeGenerator"
         case aztec = "CIAztecCodeGenerator"
         case qr = "CIQRCodeGenerator"
+        
+        static func all() -> [SupportedFormat]{
+            return [code128, pdf417, aztec, qr]
+        }
     }
     
-    static func generateCode(for string: String, type: SupportedFormat, size: CGSize)->UIImage?{
-        let helper = QRCodeHelper()
+     func generateCode(for string: String, type: SupportedFormat, size: CGSize)->UIImage?{
+        let helper = BarcodeHelper()
         if let generatedCode = helper.generateCode(for: string, type: type){
             return helper.resizeImageWithoutInterpolation(generatedCode, size: size)
         }
@@ -38,7 +42,17 @@ class QRCodeHelper{
         guard let data = string.data(using: String.Encoding.utf8)
             else { NSLog("Could not extract data from string"); return nil }
         
-        let parameters: [String: Any] = ["inputCorrectionLevel" : "H", "inputMessage" : data]
+        var parameters: [String: Any] = ["inputMessage" : data]
+        switch type {
+        case .aztec:
+            parameters["inputCorrectionLevel"] = 25
+        case .qr:
+            parameters["inputCorrectionLevel"] = "H"
+        case .pdf417:
+            parameters["inputCorrectionLevel"] = 3
+        case .code128:
+            parameters["inputCorrectionLevel"] = 3
+        }
         
         if let qrFilter = CIFilter(name: type.rawValue, withInputParameters: parameters){
             if let ciImage = qrFilter.outputImage{

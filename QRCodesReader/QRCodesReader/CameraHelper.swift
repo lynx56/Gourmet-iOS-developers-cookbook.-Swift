@@ -9,7 +9,7 @@
 import AVFoundation
 import UIKit
 
-class CameraHelper: NSObject, AVCaptureMetadataOutputObjectsDelegate{
+class CameraHelper: NSObject, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     private var session: AVCaptureSession!
     var metadataDelegate: CameraHelperMetadataDelegate!
     
@@ -87,11 +87,21 @@ class CameraHelper: NSObject, AVCaptureMetadataOutputObjectsDelegate{
         session.addOutput(output)
         
         output.metadataObjectTypes = output.availableMetadataObjectTypes
-        
+  
         session.commitConfiguration()
     }
     
-    
+    func addVideoOutput(){
+        session.beginConfiguration()
+        
+        let videoOutput = AVCaptureVideoDataOutput()
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey : kCVPixelFormatType_32BGRA] as [String : Any]
+        videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue.main)
+        
+        session.addOutput(videoOutput)
+        
+        session.commitConfiguration()
+    }
     
     func previewInView(_ view: UIView) -> AVCaptureVideoPreviewLayer?{
         guard let sublayers = view.layer.sublayers else {
@@ -106,6 +116,39 @@ class CameraHelper: NSObject, AVCaptureMetadataOutputObjectsDelegate{
         
         return nil
     }
+    
+    func getImageFromSampleBuffer(sampleBuffer: CMSampleBuffer) ->UIImage? {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return nil
+        }
+        CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+        let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer)
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+        guard let context = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
+            return nil
+        }
+        guard let cgImage = context.makeImage() else {
+            return nil
+        }
+        let image = UIImage(cgImage: cgImage, scale: 1, orientation:.right)
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly)
+        return image
+    }
+    
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let context = CIContext()
+        let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
+        outputImage = UIImage(cgImage: cgImage)
+    }
+    
+    var outputImage: UIImage?
+
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         let barcodeTypes = [AVMetadataObject.ObjectType.upce,

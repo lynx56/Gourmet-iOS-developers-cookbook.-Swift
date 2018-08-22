@@ -21,7 +21,7 @@ class BarcodeDetailsViewController: UIViewController {
     }
     
     @IBOutlet weak var barcodeImage: UIImageView!
-    @IBOutlet weak var barcodeTextView: UITextView!
+    @IBOutlet weak var barcodeText: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +37,8 @@ class BarcodeDetailsViewController: UIViewController {
     }
     
     func updateUI(){
-        barcodeTextView?.text = model.barcode
+        barcodeText?.text = model.barcode
+        barcodeText?.sizeToFit()
         barcodeImage?.image = model.image
     }
 
