@@ -15,6 +15,14 @@ class SpeachHelper: NSObject, AVSpeechSynthesizerDelegate{
         utterance.rate = AVSpeechUtteranceMinimumSpeechRate + rateRange * rate
     
         utterance.voice = AVSpeechSynthesisVoice(language: languageCode)
+   
+        for voice in AVSpeechSynthesisVoice.speechVoices(){
+            print("------------------")
+            print(voice.name)
+            print(voice.identifier)
+            print(voice.language)
+            print("------------------")
+        }
         
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.delegate = self
