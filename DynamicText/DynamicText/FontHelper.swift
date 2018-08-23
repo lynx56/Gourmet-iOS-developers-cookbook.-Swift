@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 extension UIFont{
     
@@ -53,6 +54,14 @@ extension UIFont{
     static var largeTitle: UIFont{
         return UIFont.preferredFont(forTextStyle: UIFontTextStyle.largeTitle)
     }
+    
+    static var fonts: [UIFont]{
+        return [UIFont.headline, UIFont.subheadline, UIFont.body, UIFont.footnote, UIFont.caption1, UIFont.caption2, UIFont.title1, UIFont.title2, UIFont.title3, UIFont.callout, UIFont.largeTitle]
+    }
+    
+    static var styles: [UIFontTextStyle]{
+        return [UIFontTextStyle.headline, UIFontTextStyle.subheadline, UIFontTextStyle.body, UIFontTextStyle.footnote, UIFontTextStyle.caption1, UIFontTextStyle.caption2, UIFontTextStyle.title1, UIFontTextStyle.title2, UIFontTextStyle.title3, UIFontTextStyle.callout, UIFontTextStyle.largeTitle]
+    }
 }
 
 /*
@@ -71,3 +80,46 @@ extension UIFont{
  | .caption2    | SFUIText          | 11.0 |
  */
 
+
+extension UIFont{
+    func closestSystemStyle()->UIFontTextStyle{
+        var minimumdistance = MAXFLOAT
+        var selectedIndex = -1
+        var index = 0
+        
+        for candidate in UIFont.fonts{
+            let distance: Float = Float(abs(self.pointSize - candidate.pointSize))
+    
+            if distance < minimumdistance{
+                minimumdistance = distance
+                selectedIndex = index
+            }
+            
+            index += 1
+        }
+        
+        return UIFont.styles[selectedIndex]
+    }
+}
+
+extension NSAttributedString{
+    func textStyleRangeDictionary(){
+        var result: [NSRange: Any] = [:]
+        
+        self.enumerateAttributes(in: NSMakeRange(0, self.length), options: .init(rawValue: 0)) { (attrs, range, stop) in
+            if let font = attrs[NSAttributedStringKey.font] as? UIFont{
+                if let index = UIFont.fonts.index(of: font){
+                    let textStyle = UIFont.styles[index]
+                    result[range] = textStyle
+                  //  NSValue.init(range: range) =
+                }else{
+                    let closestMatch = font.closestSystemStyle()
+                    let closestSystemFont = UIFont.preferredFont(forTextStyle: closestMatch)
+                    
+                    let multiplier = font.pointSize / closestSystemFont.pointSize
+                    result[range] = (closestMatch, font.fontName, multiplier)
+                }
+            }
+        }
+    }
+}
