@@ -104,22 +104,28 @@ extension UIFont{
 
 extension NSAttributedString{
     func textStyleRangeDictionary(){
-        var result: [NSRange: Any] = [:]
+        var result: [NSRange: FindedFont] = [:]
         
         self.enumerateAttributes(in: NSMakeRange(0, self.length), options: .init(rawValue: 0)) { (attrs, range, stop) in
             if let font = attrs[NSAttributedStringKey.font] as? UIFont{
                 if let index = UIFont.fonts.index(of: font){
                     let textStyle = UIFont.styles[index]
-                    result[range] = textStyle
+                    result[range] = FindedFont.system(withStyle: textStyle)
                   //  NSValue.init(range: range) =
                 }else{
                     let closestMatch = font.closestSystemStyle()
                     let closestSystemFont = UIFont.preferredFont(forTextStyle: closestMatch)
                     
                     let multiplier = font.pointSize / closestSystemFont.pointSize
-                    result[range] = (closestMatch, font.fontName, multiplier)
+                    result[range] = FindedFont.closest(closestMatch: closestMatch, fontName: font.fontName, multiplier: multiplier)
                 }
             }
         }
     }
+}
+
+
+enum FindedFont{
+    case system(withStyle: UIFontTextStyle)
+    case closest(closestMatch: UIFontTextStyle, fontName: String, multiplier: CGFloat)
 }
