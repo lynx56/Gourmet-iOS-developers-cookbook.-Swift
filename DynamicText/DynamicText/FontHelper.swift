@@ -122,6 +122,28 @@ extension NSAttributedString{
             }
         }
     }
+    
+    
+    
+    func withTextStyles(dict: [NSRange: FindedFont])->NSAttributedString{
+        let result = NSMutableAttributedString(attributedString: self)
+        
+        for style in dict.enumerated(){
+            var font: UIFont!
+            switch style.element.value{
+            case .system(let systemStyle):
+                font = UIFont.preferredFont(forTextStyle: systemStyle)
+            case .closest(let closestMatch, let fontName, let multiplier):
+                let closestSystemFont = UIFont.preferredFont(forTextStyle: closestMatch)
+                font = UIFont(name: fontName, size: closestSystemFont.pointSize * multiplier)
+                
+            }
+            
+            result.addAttributes([NSAttributedStringKey.font : font], range: style.element.key)
+        }
+        
+        return result
+    }
 }
 
 
